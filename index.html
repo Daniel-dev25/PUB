@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto de Arquitetura de Rede | Apresentação Executiva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Estilos Personalizados Externos -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                            950: '#090d16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
+
+    <!-- Top Executive Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-4 gap-4">
+                <!-- Brand / Title -->
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg shadow-blue-500/20">
+                        <i data-lucide="network" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Infraestrutura & Engenharia de Rede</h1>
+                        <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            Switch PoE 8P no Salão
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400">Arquitetura Segmentada • Rede Adm (192.168.1.x) & Clientes (192.168.2.x)</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex overflow-x-auto pb-1 md:pb-0 gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80" aria-label="Abas de Apresentação">
+                <button onclick="switchTab('planta')" id="tab-planta" class="tab-btn active flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap bg-blue-600 text-white shadow-md">
+                    <i data-lucide="map" class="w-4 h-4"></i>
+                    <span>1. Planta Real & Wi-Fi</span>
+                </button>
+                <button onclick="switchTab('topologia')" id="tab-topologia" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i data-lucide="git-merge" class="w-4 h-4"></i>
+                    <span>2. Topologia</span>
+                </button>
+                <button onclick="switchTab('seguranca')" id="tab-seguranca" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>3. VLANs & SSIDs</span>
+                </button>
+                <button onclick="switchTab('executivo')" id="tab-executivo" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i>
+                    <span>4. Visão Executiva</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content Container -->
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- Helper Banner -->
+    <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-blue-950/30 border border-blue-800/40 rounded-xl px-4 py-3 text-xs sm:text-sm text-blue-200">
+        <div class="flex items-center gap-2.5">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+            <span><strong>Arquitetura Distribuída:</strong> Switch PoE 8 Portas L2 instalado no salão alimentando <strong>AP 1 a AP 4</strong> (passe o mouse nos cabos para detalhes) + <strong>AP 5</strong> na Cozinha.</span>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 text-xs font-mono text-slate-300 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Adm 192.168.1.x • Cli 192.168.2.x</span>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         SEÇÃO 1: PLANTA BAIXA REAL INTERATIVA & COBERTURA WI-FI
+         ===================================================================== -->
+    <section id="section-planta" class="tab-section space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Planta Baixa Real & Distribuição PoE no Salão</h2>
+                <p class="text-slate-400 text-sm mt-1">Switch PoE 8 Portas L2 no Salão alimentando AP 1 a AP 4, Rack Central na Área Verde e AP 5 na Cozinha.</p>
+            </div>
+
+            <!-- Interactive Controls for Floorplan -->
+            <div class="flex flex-wrap items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800">
+                <!-- Toggle Heatmap -->
+                <button id="btn-toggle-heatmap" onclick="toggleHeatmap()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition-all shadow">
+                    <i data-lucide="radio" class="w-3.5 h-3.5"></i>
+                    <span>Sinal RF: ON</span>
+                </button>
+
+                <!-- Toggle Cat6 Cables -->
+                <button id="btn-toggle-cables" onclick="toggleCables()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-600 text-white transition-all shadow">
+                    <i data-lucide="cable" class="w-3.5 h-3.5"></i>
+                    <span>Cabos Cat6: ON</span>
+                </button>
+
+                <!-- Toggle Zones -->
+                <button id="btn-toggle-zones" onclick="toggleZones()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                    <span>Zonas: ON</span>
+                </button>
+
+                <!-- SSID Filter Selector -->
+                <div class="flex items-center bg-slate-950 rounded-lg p-1 border border-slate-800">
+                    <button onclick="setFloorFilter('all')" id="filter-all" class="floor-filter-btn px-2.5 py-1 rounded text-xs font-medium bg-blue-600 text-white transition-all">
+                        Todos
+                    </button>
+                    <button onclick="setFloorFilter('pdv')" id="filter-pdv" class="floor-filter-btn px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition-all">
+                        PDV/KDS
+                    </button>
+                    <button onclick="setFloorFilter('clientes')" id="filter-clientes" class="floor-filter-btn px-2.5 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition-all">
+                        Clientes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floorplan Layout Grid: Left = Real Architectural SVG Map (8 cols), Right = Inspector & Justification (4 cols) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Real Floorplan Canvas (8 cols) -->
+            <div class="lg:col-span-8 glass-panel rounded-2xl p-4 sm:p-5 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs text-slate-400">
+                    <span class="font-mono uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i data-lucide="compass" class="w-4 h-4 text-blue-400"></i>
+                        Planta Baixa Térreo • Escala Esquemática
+                    </span>
+                    <span class="text-slate-400">Clique em qualquer AP ou no Rack Verde para inspecionar</span>
+                </div>
+
+                <!-- Responsive Architectural SVG Container matching planta_pub_editado.jpeg -->
+                <div class="relative w-full aspect-[4/3] bg-slate-950 rounded-xl border-2 border-slate-700/90 overflow-hidden shadow-inner">
+                    <!-- Floating Hover Tooltip for Cat6 PoE Cables -->
+                    <div id="cable-hover-tooltip" class="pointer-events-none fixed z-50 hidden max-w-xs bg-slate-900/95 backdrop-blur-md border border-amber-400/70 text-slate-100 rounded-xl px-3.5 py-2.5 shadow-2xl shadow-amber-950/50 transition-opacity duration-150">
+                        <div class="flex items-center gap-2 text-amber-400 font-bold text-xs mb-1">
+                            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                            <span id="tooltip-cable-title">Cabo Cat6 PoE+ (Salão)</span>
+                        </div>
+                        <p id="tooltip-cable-desc" class="text-[11px] text-slate-200 leading-snug">
+                            Transportando <strong>internet (dados)</strong> e <strong>energia elétrica</strong> juntos no salão.
+                        </p>
+                    </div>
+
+                    <svg id="floorplan-svg" viewBox="0 0 800 600" class="w-full h-full select-none">
+                        <defs>
+                            <!-- Architectural Blueprint Grid -->
+                            <pattern id="blueprint-grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(51, 65, 85, 0.3)" stroke-width="1"/>
+                            </pattern>
+
+                            <!-- Radial Gradients for Wi-Fi Coverage Heatmaps -->
+                            <radialGradient id="grad-salao-all" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.36"/>
+                                <stop offset="60%" stop-color="#e11d48" stop-opacity="0.15"/>
+                                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <radialGradient id="grad-pdv" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.46"/>
+                                <stop offset="65%" stop-color="#d97706" stop-opacity="0.18"/>
+                                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <radialGradient id="grad-clientes" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.42"/>
+                                <stop offset="65%" stop-color="#0891b2" stop-opacity="0.16"/>
+                                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <radialGradient id="grad-cozinha-blue" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.50"/>
+                                <stop offset="65%" stop-color="#2563eb" stop-opacity="0.22"/>
+                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Background Blueprint Grid -->
+                        <rect width="800" height="600" fill="url(#blueprint-grid)" />
+
+                        <!-- Outer Building Perimeter -->
+                        <path d="M 45 45 L 755 45 L 755 545 L 185 545 L 85 455 Z" fill="rgba(15, 23, 42, 0.65)" stroke="#64748b" stroke-width="4"/>
+
+                        <!-- =========================================================
+                             1. ZONA VERMELHA: SALÃO PRINCIPAL (ESQUERDA & CENTRO)
+                             ========================================================= -->
+                        <g id="zone-red-salao" class="transition-opacity duration-300">
+                            <!-- Contorno exato da marcação vermelha da foto -->
+                            <path d="M 55 52 L 515 52 L 515 478 L 195 478 L 155 510 L 90 448 Z" 
+                                  fill="rgba(239, 68, 68, 0.06)" 
+                                  stroke="#ef4444" 
+                                  stroke-width="3.5" 
+                                  stroke-linejoin="round"/>
+                            <rect x="68" y="62" width="142" height="22" rx="4" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="1"/>
+                            <text x="139" y="76" fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle">ZONA SALÃO (4 APs)</text>
+                        </g>
+
+                        <!-- Elementos Arquitetônicos Reais do Salão (conforme planta) -->
+                        <g id="salao-furniture">
+                            <!-- Pilares estruturais superiores (quadrados escuros na planta) -->
+                            <rect x="145" y="95" width="12" height="12" fill="#475569" stroke="#94a3b8"/>
+                            <rect x="235" y="95" width="12" height="12" fill="#475569" stroke="#94a3b8"/>
+                            <rect x="330" y="95" width="18" height="12" fill="#475569" stroke="#94a3b8"/>
+                            <rect x="415" y="95" width="18" height="12" fill="#475569" stroke="#94a3b8"/>
+                            <rect x="495" y="95" width="12" height="12" fill="#475569" stroke="#94a3b8"/>
+                            <!-- Pilares laterais esquerdos -->
+                            <rect x="65" y="135" width="10" height="10" fill="#475569"/>
+                            <rect x="76" y="255" width="10" height="10" fill="#475569"/>
+                            <rect x="88" y="375" width="10" height="10" fill="#475569"/>
+
+                            <!-- Bancadas Superiores com Banquetas (BA1 - 4 grupos na parte superior) -->
+                            <g fill="rgba(180, 120, 80, 0.35)" stroke="#d97706" stroke-width="1.2">
+                                <!-- Grupo 1 -->
+                                <rect x="195" y="116" width="54" height="10" rx="2"/>
+                                <circle cx="204" cy="133" r="4"/><circle cx="222" cy="133" r="4"/><circle cx="240" cy="133" r="4"/>
+                                <!-- Grupo 2 -->
+                                <rect x="275" y="116" width="54" height="10" rx="2"/>
+                                <circle cx="284" cy="133" r="4"/><circle cx="302" cy="133" r="4"/><circle cx="320" cy="133" r="4"/>
+                                <!-- Grupo 3 -->
+                                <rect x="355" y="116" width="54" height="10" rx="2"/>
+                                <circle cx="364" cy="133" r="4"/><circle cx="382" cy="133" r="4"/><circle cx="400" cy="133" r="4"/>
+                                <!-- Grupo 4 -->
+                                <rect x="435" y="116" width="44" height="10" rx="2"/>
+                                <circle cx="445" cy="133" r="4"/><circle cx="468" cy="133" r="4"/>
+                            </g>
+
+                            <!-- 2 Balcões Centrais Duplos Paralelos (SO2) -->
+                            <g>
+                                <!-- Fileira Superior de Cadeiras/Banquetas (CA1) -->
+                                <g fill="rgba(244, 63, 94, 0.3)" stroke="#fb7185" stroke-width="1">
+                                    <rect x="172" y="212" width="16" height="12" rx="2"/><rect x="208" y="212" width="16" height="12" rx="2"/>
+                                    <rect x="244" y="212" width="16" height="12" rx="2"/><rect x="280" y="212" width="16" height="12" rx="2"/>
+                                    <rect x="316" y="212" width="16" height="12" rx="2"/><rect x="352" y="212" width="16" height="12" rx="2"/>
+                                    <rect x="388" y="212" width="16" height="12" rx="2"/>
+                                </g>
+                                <!-- Balcão Central 1 -->
+                                <rect x="162" y="232" width="256" height="14" rx="7" fill="rgba(163, 163, 60, 0.35)" stroke="#a3e635" stroke-width="1.5"/>
+                                <!-- Balcão Central 2 -->
+                                <rect x="162" y="254" width="256" height="14" rx="7" fill="rgba(163, 163, 60, 0.35)" stroke="#a3e635" stroke-width="1.5"/>
+                                <!-- Fileira Inferior de Cadeiras/Banquetas (CA1) -->
+                                <g fill="rgba(244, 63, 94, 0.3)" stroke="#fb7185" stroke-width="1">
+                                    <rect x="172" y="276" width="16" height="12" rx="2"/><rect x="208" y="276" width="16" height="12" rx="2"/>
+                                    <rect x="244" y="276" width="16" height="12" rx="2"/><rect x="280" y="276" width="16" height="12" rx="2"/>
+                                    <rect x="316" y="276" width="16" height="12" rx="2"/><rect x="352" y="276" width="16" height="12" rx="2"/>
+                                    <rect x="388" y="276" width="16" height="12" rx="2"/>
+                                </g>
+                            </g>
+
+                            <!-- 4 Nichos / Sofás em formato de "U" (SO1) na parte inferior do salão -->
+                            <g fill="rgba(148, 163, 184, 0.25)" stroke="#94a3b8" stroke-width="1.5">
+                                <!-- Sofá U 1 -->
+                                <path d="M 190 365 L 190 425 L 242 425 L 242 365 L 228 365 L 228 410 L 204 410 L 204 365 Z"/>
+                                <!-- Sofá U 2 -->
+                                <path d="M 254 365 L 254 425 L 306 425 L 306 365 L 292 365 L 292 410 L 268 410 L 268 365 Z"/>
+                                <!-- Sofá U 3 -->
+                                <path d="M 318 365 L 318 425 L 370 425 L 370 365 L 356 365 L 356 410 L 332 410 L 332 365 Z"/>
+                                <!-- Sofá U 4 -->
+                                <path d="M 382 365 L 382 425 L 434 425 L 434 365 L 420 365 L 420 410 L 396 410 L 396 365 Z"/>
+                            </g>
+
+                            <!-- Rótulo sutil do Salão -->
+                            <text x="295" y="332" fill="rgba(148, 163, 184, 0.35)" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="3">SALÃO PRINCIPAL</text>
+                        </g>
+
+                        <!-- =========================================================
+                             2. ZONA AZUL: COZINHA / ÁREA OPERACIONAL (CANTO SUP. DIR.)
+                             ========================================================= -->
+                        <g id="kitchen-area">
+                            <!-- Divisória de alvenaria da Cozinha e Bar de Apoio -->
+                            <rect x="522" y="52" width="225" height="235" rx="4" fill="rgba(59, 130, 246, 0.08)" stroke="#475569" stroke-width="2.5"/>
+                            
+                            <!-- Bancadas internas da cozinha -->
+                            <rect x="650" y="65" width="85" height="32" rx="3" fill="rgba(51, 65, 85, 0.65)" stroke="#64748b"/>
+                            <text x="692" y="85" fill="#cbd5e1" font-size="8.5" text-anchor="middle">COCÇÃO / COIFA</text>
+
+                            <rect x="650" y="195" width="85" height="75" rx="3" fill="rgba(51, 65, 85, 0.65)" stroke="#64748b"/>
+                            <text x="692" y="236" fill="#cbd5e1" font-size="8.5" text-anchor="middle">PREPARO / INOX</text>
+
+                            <!-- Terminal KDS -->
+                            <rect x="536" y="135" width="66" height="26" rx="4" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+                            <text x="569" y="151" fill="#93c5fd" font-size="8.5" font-weight="bold" text-anchor="middle">TELA KDS</text>
+
+                            <!-- Destaque da Marcação Azul da Foto (Canto Superior Direito) -->
+                            <g id="zone-blue-kitchen" class="transition-opacity duration-300">
+                                <rect x="528" y="58" width="110" height="68" rx="12" fill="rgba(59, 130, 246, 0.16)" stroke="#3b82f6" stroke-width="3"/>
+                                <text x="688" y="130" fill="#60a5fa" font-size="13" font-weight="800" text-anchor="middle" letter-spacing="1">COZINHA</text>
+                                <text x="688" y="144" fill="#93c5fd" font-size="8.5" text-anchor="middle">(Zona Azul • AP 5)</text>
+                            </g>
+                        </g>
+
+                        <!-- =========================================================
+                             3. ZONA VERDE: RACK CENTRAL / CPD (CANTO INF. DIR.)
+                             ========================================================= -->
+                        <g id="rack-area" onclick="selectFloorNode('rack')" class="cursor-pointer group">
+                            <!-- Área de sanitários / circulação intermediária -->
+                            <rect x="522" y="295" width="225" height="65" fill="rgba(30, 41, 59, 0.4)" stroke="#334155" stroke-width="1.5"/>
+                            <text x="635" y="331" fill="#64748b" font-size="9" text-anchor="middle">CORREDOR / APOIO TÉCNICO</text>
+
+                            <!-- Sala Delimitada em Verde na foto (Canto Inferior Direito) -->
+                            <rect x="522" y="368" width="225" height="168" rx="6" fill="rgba(16, 185, 129, 0.12)" stroke="#10b981" stroke-width="3.5"/>
+                            
+                            <!-- Gabinete do Rack Central dentro da Zona Verde -->
+                            <rect x="550" y="402" width="170" height="106" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2.5"/>
+                            <text x="635" y="390" fill="#6ee7b7" font-size="11" font-weight="800" text-anchor="middle" letter-spacing="1">RACK CENTRAL (ZONA VERDE)</text>
+                            
+                            <!-- Camadas internas do Rack -->
+                            <rect x="562" y="414" width="146" height="24" rx="4" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.2"/>
+                            <text x="635" y="429" fill="#c7d2fe" font-size="8.5" font-weight="bold" text-anchor="middle">1. Roteador Central (Core)</text>
+
+                            <rect x="562" y="444" width="146" height="24" rx="4" fill="#172554" stroke="#60a5fa" stroke-width="1.2"/>
+                            <text x="635" y="459" fill="#bfdbfe" font-size="8.5" font-weight="bold" text-anchor="middle">2. Switch 48 Portas L2 Ger.</text>
+
+                            <rect x="562" y="474" width="146" height="24" rx="4" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+                            <text x="635" y="489" fill="#6ee7b7" font-size="8" font-weight="semibold" text-anchor="middle">Sub-redes: .1.x Adm | .2.x Cli</text>
+                        </g>
+
+                        <!-- =========================================================
+                             3B. SWITCH POE 8 PORTAS L2 GERENCIÁVEL (DENTRO DO SALÃO)
+                             ========================================================= -->
+                        <g id="salao-poe-switch" onclick="selectFloorNode('switchPoe')" class="cursor-pointer group">
+                            <rect x="442" y="228" width="68" height="44" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="2.5"/>
+                            <circle cx="452" cy="237" r="2.5" fill="#34d399" class="animate-pulse"/>
+                            <text x="476" y="246" fill="#fde68a" font-size="8.5" font-weight="800" text-anchor="middle">SW PoE 8P</text>
+                            <text x="476" y="257" fill="#fbbf24" font-size="7.5" font-weight="bold" text-anchor="middle">L2 Gerenc.</text>
+                            <rect x="434" y="275" width="84" height="14" rx="3" fill="rgba(69, 26, 3, 0.95)" stroke="#f59e0b" stroke-width="0.9"/>
+                            <text x="476" y="284" fill="#fef3c7" font-size="7.5" font-weight="bold" text-anchor="middle">SWITCH SALÃO</text>
+                        </g>
+
+                        <!-- =========================================================
+                             4. TRAÇADO DE CABEAMENTO CAT6 (COM HOVER INTERATIVO POE)
+                             ========================================================= -->
+                        <g id="cat6-cables-layer" class="transition-opacity duration-300">
+                            <!-- Uplink Rack Verde (Switch 48P) -> Switch PoE 8P no Salão (Apenas Dados Trunk) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Uplink Cat6 Trunk (Rack Verde → Salão)"
+                               data-desc="Link de dados Gigabit 802.1Q levando VLAN 10 (192.168.1.x Adm) e VLAN 20 (192.168.2.x Clientes) até o Switch PoE 8P do salão.">
+                                <path d="M 562 456 L 516 456 L 516 250 L 510 250" stroke="#38bdf8" stroke-width="2.5" fill="none" class="animate-flow"/>
+                                <path d="M 562 456 L 516 456 L 516 250 L 510 250" stroke="transparent" stroke-width="14" fill="none"/>
+                            </g>
+
+                            <!-- Cabo PoE+ Salão -> AP 1 (Superior Esquerdo) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Cabo Cat6 PoE+ • Switch Salão → AP 1"
+                               data-desc="Está passando internet (dados) e energia elétrica juntos no salão para alimentar o AP 1 (Superior Esquerdo).">
+                                <path d="M 476 228 L 476 142 L 165 142 L 165 175" stroke="#fbbf24" stroke-width="2.2" fill="none" class="animate-flow"/>
+                                <path d="M 476 228 L 476 142 L 165 142 L 165 175" stroke="transparent" stroke-width="16" fill="none"/>
+                            </g>
+
+                            <!-- Cabo PoE+ Salão -> AP 2 (Superior Direito) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Cabo Cat6 PoE+ • Switch Salão → AP 2"
+                               data-desc="Está passando internet (dados) e energia elétrica juntos no salão para alimentar o AP 2 (Superior Direito).">
+                                <path d="M 465 228 L 465 175 L 435 175" stroke="#fbbf24" stroke-width="2.2" fill="none" class="animate-flow"/>
+                                <path d="M 465 228 L 465 175 L 435 175" stroke="transparent" stroke-width="16" fill="none"/>
+                            </g>
+
+                            <!-- Cabo PoE+ Salão -> AP 3 (Inferior Esquerdo) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Cabo Cat6 PoE+ • Switch Salão → AP 3"
+                               data-desc="Está passando internet (dados) e energia elétrica juntos no salão para alimentar o AP 3 (Inferior Esquerdo).">
+                                <path d="M 465 272 L 465 312 L 155 312 L 155 355" stroke="#fbbf24" stroke-width="2.2" fill="none" class="animate-flow"/>
+                                <path d="M 465 272 L 465 312 L 155 312 L 155 355" stroke="transparent" stroke-width="16" fill="none"/>
+                            </g>
+
+                            <!-- Cabo PoE+ Salão -> AP 4 (Inferior Direito) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Cabo Cat6 PoE+ • Switch Salão → AP 4"
+                               data-desc="Está passando internet (dados) e energia elétrica juntos no salão para alimentar o AP 4 (Inferior Direito).">
+                                <path d="M 476 272 L 476 345 L 435 345" stroke="#fbbf24" stroke-width="2.2" fill="none" class="animate-flow"/>
+                                <path d="M 476 272 L 476 345 L 435 345" stroke="transparent" stroke-width="16" fill="none"/>
+                            </g>
+
+                            <!-- Cabo PoE+ Salão -> AP 5 (Cozinha Superior Direita) -->
+                            <g class="cable-hover-zone cursor-help"
+                               data-title="Cabo Cat6 PoE+ • Switch PoE → AP 5 (Cozinha)"
+                               data-desc="Está passando internet (dados) e energia elétrica juntos para alimentar o AP 5 exclusivo da Cozinha (KDS).">
+                                <path d="M 495 228 L 495 92 L 582 92" stroke="#60a5fa" stroke-width="2.2" fill="none" class="animate-flow"/>
+                                <path d="M 495 228 L 495 92 L 582 92" stroke="transparent" stroke-width="16" fill="none"/>
+                            </g>
+
+                            <!-- Etiquetas de identificação nos cabos -->
+                            <g font-size="7.5" font-family="monospace" font-weight="bold" pointer-events="none">
+                                <rect x="285" y="135" width="76" height="13" rx="3" fill="#0f172a" stroke="#fbbf24" stroke-width="0.8"/>
+                                <text x="323" y="144" fill="#fde68a" text-anchor="middle">PoE+ Dados/Energia</text>
+
+                                <rect x="285" y="305" width="76" height="13" rx="3" fill="#0f172a" stroke="#fbbf24" stroke-width="0.8"/>
+                                <text x="323" y="314" fill="#fde68a" text-anchor="middle">PoE+ Dados/Energia</text>
+
+                                <rect x="502" y="348" width="46" height="13" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="0.8"/>
+                                <text x="525" y="357" fill="#7dd3fc" text-anchor="middle">Uplink</text>
+                            </g>
+                        </g>
+
+                        <!-- =========================================================
+                             5. MAPA DE CALOR WI-FI (COBERTURA RF DOS 5 APs)
+                             ========================================================= -->
+                        <g id="heatmap-layer" class="transition-opacity duration-300 pointer-events-none">
+                            <!-- AP 1 Noroeste Salão -->
+                            <circle id="cov-ap1" cx="165" cy="175" r="145" fill="url(#grad-salao-all)"/>
+                            <!-- AP 2 Nordeste Salão -->
+                            <circle id="cov-ap2" cx="435" cy="175" r="145" fill="url(#grad-salao-all)"/>
+                            <!-- AP 3 Sudoeste Salão -->
+                            <circle id="cov-ap3" cx="155" cy="355" r="145" fill="url(#grad-salao-all)"/>
+                            <!-- AP 4 Sudeste Salão -->
+                            <circle id="cov-ap4" cx="435" cy="345" r="145" fill="url(#grad-salao-all)"/>
+                            <!-- AP 5 Cozinha (Zona Azul) -->
+                            <circle id="cov-ap5" cx="582" cy="92" r="115" fill="url(#grad-cozinha-blue)"/>
+                        </g>
+
+                        <!-- =========================================================
+                             6. NÓS INTERATIVOS DOS 5 ACCESS POINTS (NUMERADOS AP 1 A AP 5)
+                             ========================================================= -->
+                        <!-- AP 1: Salão Superior Esquerdo -->
+                        <g onclick="selectFloorNode('ap1')" class="cursor-pointer">
+                            <circle cx="165" cy="175" r="18" fill="none" stroke="#ef4444" stroke-width="1.5" class="animate-pulse-ring"/>
+                            <circle cx="165" cy="175" r="16" fill="#7f1d1d" stroke="#f87171" stroke-width="2.5"/>
+                            <text x="165" y="179" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">AP 1</text>
+                            <rect x="120" y="195" width="90" height="15" rx="4" fill="rgba(15, 23, 42, 0.92)" stroke="#f87171" stroke-width="0.9"/>
+                            <text x="165" y="205" fill="#fecaca" font-size="8" font-weight="700" text-anchor="middle">AP 1 • Salão Sup. Esq</text>
+                        </g>
+
+                        <!-- AP 2: Salão Superior Direito -->
+                        <g onclick="selectFloorNode('ap2')" class="cursor-pointer">
+                            <circle cx="435" cy="175" r="18" fill="none" stroke="#ef4444" stroke-width="1.5" class="animate-pulse-ring"/>
+                            <circle cx="435" cy="175" r="16" fill="#7f1d1d" stroke="#f87171" stroke-width="2.5"/>
+                            <text x="435" y="179" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">AP 2</text>
+                            <rect x="390" y="195" width="90" height="15" rx="4" fill="rgba(15, 23, 42, 0.92)" stroke="#f87171" stroke-width="0.9"/>
+                            <text x="435" y="205" fill="#fecaca" font-size="8" font-weight="700" text-anchor="middle">AP 2 • Salão Sup. Dir</text>
+                        </g>
+
+                        <!-- AP 3: Salão Inferior Esquerdo -->
+                        <g onclick="selectFloorNode('ap3')" class="cursor-pointer">
+                            <circle cx="155" cy="355" r="18" fill="none" stroke="#ef4444" stroke-width="1.5" class="animate-pulse-ring"/>
+                            <circle cx="155" cy="355" r="16" fill="#7f1d1d" stroke="#f87171" stroke-width="2.5"/>
+                            <text x="155" y="359" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">AP 3</text>
+                            <rect x="110" y="375" width="90" height="15" rx="4" fill="rgba(15, 23, 42, 0.92)" stroke="#f87171" stroke-width="0.9"/>
+                            <text x="155" y="385" fill="#fecaca" font-size="8" font-weight="700" text-anchor="middle">AP 3 • Salão Inf. Esq</text>
+                        </g>
+
+                        <!-- AP 4: Salão Inferior Direito -->
+                        <g onclick="selectFloorNode('ap4')" class="cursor-pointer">
+                            <circle cx="435" cy="345" r="18" fill="none" stroke="#ef4444" stroke-width="1.5" class="animate-pulse-ring"/>
+                            <circle cx="435" cy="345" r="16" fill="#7f1d1d" stroke="#f87171" stroke-width="2.5"/>
+                            <text x="435" y="349" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">AP 4</text>
+                            <rect x="390" y="365" width="90" height="15" rx="4" fill="rgba(15, 23, 42, 0.92)" stroke="#f87171" stroke-width="0.9"/>
+                            <text x="435" y="375" fill="#fecaca" font-size="8" font-weight="700" text-anchor="middle">AP 4 • Salão Inf. Dir</text>
+                        </g>
+
+                        <!-- AP 5: Cozinha (Canto Superior Direito - Zona Azul) -->
+                        <g onclick="selectFloorNode('ap5')" class="cursor-pointer">
+                            <circle cx="582" cy="92" r="19" fill="none" stroke="#3b82f6" stroke-width="2" class="animate-pulse-ring"/>
+                            <circle cx="582" cy="92" r="17" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2.5"/>
+                            <text x="582" y="96" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">AP 5</text>
+                            <rect x="532" y="113" width="100" height="15" rx="4" fill="rgba(30, 58, 138, 0.95)" stroke="#60a5fa" stroke-width="1"/>
+                            <text x="582" y="123" fill="#dbeafe" font-size="8" font-weight="bold" text-anchor="middle">AP 5 • COZINHA</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Map Color Legend matching User's Hand-Drawn Zones & PoE Switch -->
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs text-slate-300 bg-slate-900/70 py-2.5 px-4 rounded-xl border border-slate-800">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-red-500/30 border-2 border-red-500 inline-block"></span> Salão (AP 1 a AP 4)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-500/30 border-2 border-amber-500 inline-block"></span> Switch PoE 8P L2 (Salão)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500/30 border-2 border-blue-500 inline-block"></span> Cozinha (AP 5)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500/30 border-2 border-emerald-500 inline-block"></span> Rack Central</span>
+                    <span class="flex items-center gap-1.5"><span class="w-4 h-0.5 bg-amber-400 inline-block"></span> Cabo PoE (Dados+Energia)</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Inspector Panel + IP Subnet Summary (4 cols) -->
+            <div class="lg:col-span-4 space-y-4">
+                
+                <!-- Dynamic Selected Node Inspector Card -->
+                <div id="floor-inspector-card" class="glass-panel rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span id="insp-badge" class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            Switch PoE • Salão
+                        </span>
+                        <span id="insp-cable" class="text-xs font-mono text-cyan-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">
+                            8 Portas L2 PoE+
+                        </span>
+                    </div>
+
+                    <h3 id="insp-title" class="text-lg font-bold text-white">Switch PoE 8 Portas L2 Gerenciável</h3>
+                    <p id="insp-desc" class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                        Posicionado estrategicamente dentro do salão para concentrar a alimentação elétrica e dados (Cat6 PoE+) dos Access Points AP 1, AP 2, AP 3, AP 4 e AP 5 com cabos curtos.
+                    </p>
+
+                    <div class="mt-4 pt-3 border-t border-slate-800 space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">IP Gerência (Adm):</span>
+                            <span id="insp-channels" class="font-mono text-emerald-300">192.168.1.3 /24</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Conexão Uplink:</span>
+                            <span id="insp-port" class="font-mono text-blue-300">Cat6 Trunk ← Switch 48P</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">VLANs Transportadas:</span>
+                            <span id="insp-ssid" class="font-semibold text-amber-300">VLAN 10 (.1.x) & VLAN 20 (.2.x)</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Node Selector Buttons -->
+                    <div class="mt-4 pt-3 border-t border-slate-800">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Inspecionar Equipamento na Planta:</span>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button onclick="selectFloorNode('ap1')" class="py-1.5 rounded bg-slate-900 hover:bg-red-950/60 border border-slate-700 hover:border-red-500 text-xs font-bold text-red-300 transition-colors">AP 1 (Salão)</button>
+                            <button onclick="selectFloorNode('ap2')" class="py-1.5 rounded bg-slate-900 hover:bg-red-950/60 border border-slate-700 hover:border-red-500 text-xs font-bold text-red-300 transition-colors">AP 2 (Salão)</button>
+                            <button onclick="selectFloorNode('ap3')" class="py-1.5 rounded bg-slate-900 hover:bg-red-950/60 border border-slate-700 hover:border-red-500 text-xs font-bold text-red-300 transition-colors">AP 3 (Salão)</button>
+                            <button onclick="selectFloorNode('ap4')" class="py-1.5 rounded bg-slate-900 hover:bg-red-950/60 border border-slate-700 hover:border-red-500 text-xs font-bold text-red-300 transition-colors">AP 4 (Salão)</button>
+                            <button onclick="selectFloorNode('ap5')" class="py-1.5 rounded bg-blue-950/60 hover:bg-blue-900/70 border border-blue-500/50 text-xs font-bold text-blue-300 transition-colors">AP 5 (Coz.)</button>
+                            <button onclick="selectFloorNode('switchPoe')" class="py-1.5 rounded bg-amber-950/60 hover:bg-amber-900/70 border border-amber-500/50 text-xs font-bold text-amber-300 transition-colors">SW PoE 8P</button>
+                        </div>
+                        <button onclick="selectFloorNode('rack')" class="mt-1.5 w-full py-1.5 rounded bg-emerald-950/60 hover:bg-emerald-900/70 border border-emerald-500/50 text-xs font-bold text-emerald-300 transition-colors">Rack Central (Zona Verde)</button>
+                    </div>
+                </div>
+
+                <!-- IP Addressing Quick Card -->
+                <div class="glass-panel rounded-2xl p-5 space-y-3">
+                    <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                        <i data-lucide="network" class="w-4 h-4 text-cyan-400"></i>
+                        Plano de Endereçamento IPv4
+                    </h4>
+                    <div class="space-y-2.5 text-xs">
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-amber-500/30">
+                            <div class="flex items-center justify-between font-bold text-amber-300">
+                                <span>VLAN 10 • Administrativo & PDV/KDS</span>
+                                <span class="font-mono bg-amber-500/20 px-2 py-0.5 rounded">192.168.1.0/24</span>
+                            </div>
+                            <p class="text-slate-400 mt-1">Faixa <strong>192.168.1.x</strong> exclusiva para gerência de switches, APs, caixas PDV e telas KDS.</p>
+                        </div>
+
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-cyan-500/30">
+                            <div class="flex items-center justify-between font-bold text-cyan-300">
+                                <span>VLAN 20 • Exclusiva Clientes</span>
+                                <span class="font-mono bg-cyan-500/20 px-2 py-0.5 rounded">192.168.2.0/24</span>
+                            </div>
+                            <p class="text-slate-400 mt-1">Faixa <strong>192.168.2.x</strong> isolada para visitantes no salão, sem acesso à rede 192.168.1.x.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SEÇÃO 2: TOPOLOGIA FÍSICA E LÓGICA
+         ===================================================================== -->
+    <section id="section-topologia" class="tab-section hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Cadeia Hierárquica de Equipamentos</h2>
+                <p class="text-slate-400 text-sm mt-1">Do Rack Central (Zona Verde) até o Switch PoE 8 Portas no Salão e os 5 Access Points (AP 1 a AP 5).</p>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-slate-400 bg-slate-900 px-3.5 py-2 rounded-lg border border-slate-800">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Uplink Trunk (192.168.1.x & .2.x)</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Cabo PoE+ (Dados + Energia)</span>
+            </div>
+        </div>
+
+        <!-- Interactive Vertical/Horizontal Hierarchy Diagram -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+            <!-- Decorative Grid Background -->
+            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#64748b 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+            <div class="relative z-10 flex flex-col items-center space-y-6">
+                
+                <!-- TIER 1: ROTEADOR CENTRAL (RACK VERDE) -->
+                <div onclick="showDeviceDetails('router')" class="group cursor-pointer w-full max-w-xl bg-slate-900/90 hover:bg-slate-800/90 border-2 border-indigo-500/50 hover:border-indigo-400 rounded-2xl p-5 transition-all shadow-lg hover:shadow-indigo-500/20">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl group-hover:scale-110 transition-transform">
+                                <i data-lucide="server" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Rack Central (Área Verde) • Camada Core</span>
+                                    <span class="px-2 py-0.5 text-[10px] rounded bg-indigo-500/20 text-indigo-300 font-mono">192.168.1.1 / .2.1</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mt-0.5">Roteador Central Gerenciável</h3>
+                                <p class="text-xs text-slate-400 mt-1">Gateway das sub-redes 192.168.1.0/24 (Adm) e 192.168.2.0/24 (Clientes), Firewall e QoS.</p>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors"></i>
+                    </div>
+                </div>
+
+                <!-- CONNECTOR 1 -> 2 -->
+                <div class="flex flex-col items-center">
+                    <div class="h-8 w-0.5 bg-gradient-to-b from-indigo-500 to-blue-500 relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 left-3 whitespace-nowrap bg-slate-900 border border-slate-700 px-2.5 py-0.5 rounded text-[11px] font-mono text-blue-300">
+                            Uplink Trunk (802.1Q) • 1Gbps
+                        </div>
+                    </div>
+                    <i data-lucide="arrow-down" class="w-4 h-4 text-blue-500 -mt-1"></i>
+                </div>
+
+                <!-- TIER 2: SWITCH 48 PORTAS L2 GERENCIÁVEL -->
+                <div onclick="showDeviceDetails('switch48')" class="group cursor-pointer w-full max-w-xl bg-slate-900/90 hover:bg-slate-800/90 border-2 border-blue-500/50 hover:border-blue-400 rounded-2xl p-5 transition-all shadow-lg hover:shadow-blue-500/20">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-500/20 text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                                <i data-lucide="hard-drive" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Rack Central (Área Verde) • Distribuição</span>
+                                    <span class="px-2 py-0.5 text-[10px] rounded bg-blue-500/20 text-blue-300 font-mono">IP: 192.168.1.2</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mt-0.5">Switch 48 Portas L2 Gerenciável</h3>
+                                <p class="text-xs text-slate-400 mt-1">Concentrador principal do Rack Verde para caixas fixos, servidores e Uplink até o Salão.</p>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-blue-400 transition-colors"></i>
+                    </div>
+                </div>
+
+                <!-- CONNECTOR 2 -> 3 (CABO CAT6 UPLINK PARA O SALÃO) -->
+                <div onclick="showDeviceDetails('cat6')" class="cursor-pointer group flex flex-col items-center">
+                    <div class="h-10 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 left-3 whitespace-nowrap bg-slate-900 group-hover:bg-slate-800 border border-cyan-500/40 px-3 py-1 rounded-lg text-xs font-medium text-cyan-300 flex items-center gap-1.5 shadow-md transition-colors">
+                            <i data-lucide="cable" class="w-3.5 h-3.5"></i>
+                            <span>Cabo Cat6 Uplink (Rack Verde → Switch PoE no Salão)</span>
+                        </div>
+                    </div>
+                    <i data-lucide="arrow-down" class="w-4 h-4 text-cyan-400 -mt-1"></i>
+                </div>
+
+                <!-- TIER 3: SWITCH POE 8 PORTAS L2 GERENCIÁVEL (NO SALÃO) -->
+                <div onclick="showDeviceDetails('switchPoe')" class="group cursor-pointer w-full max-w-xl bg-slate-900/90 hover:bg-slate-800/90 border-2 border-amber-500/50 hover:border-amber-400 rounded-2xl p-5 transition-all shadow-lg hover:shadow-amber-500/20">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl group-hover:scale-110 transition-transform">
+                                <i data-lucide="zap" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-red-400">Posicionado no Salão • Acesso PoE+</span>
+                                    <span class="px-2 py-0.5 text-[10px] rounded bg-amber-500/20 text-amber-300 font-mono">IP: 192.168.1.3</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mt-0.5">Switch PoE 8 Portas L2 Gerenciável</h3>
+                                <p class="text-xs text-slate-400 mt-1">Instalado no salão para distribuir dados (internet) e energia elétrica juntos via Cat6 para os APs.</p>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-amber-400 transition-colors"></i>
+                    </div>
+                </div>
+
+                <!-- DISTRIBUTION FAN-OUT LINES TO 5 APs -->
+                <div class="w-full max-w-5xl pt-2">
+                    <div class="text-center mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-900 border border-slate-700 text-amber-300">
+                            <i data-lucide="git-fork" class="w-3.5 h-3.5"></i>
+                            5 Portas PoE+ Ativas (3 Portas Livres p/ Expansão) • VLAN 10 (.1.x) & VLAN 20 (.2.x)
+                        </span>
+                    </div>
+
+                    <!-- 5 ACCESS POINTS GRID (NUMERADOS AP 1 A AP 5) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                        <!-- AP 1 -->
+                        <div onclick="showDeviceDetails('ap1')" class="group cursor-pointer bg-slate-900/90 hover:bg-slate-800 border border-red-500/30 hover:border-red-400 rounded-xl p-4 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-red-500/20 text-red-300">AP 1 • SALÃO</span>
+                                    <i data-lucide="wifi" class="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-sm">Salão Sup. Esquerdo</h4>
+                                <p class="text-xs text-slate-400 mt-1">IP Adm: 192.168.1.11 • Ch 1/36</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>SW PoE Porta 01</span>
+                                <span class="text-red-300 font-medium">Detalhes →</span>
+                            </div>
+                        </div>
+
+                        <!-- AP 2 -->
+                        <div onclick="showDeviceDetails('ap2')" class="group cursor-pointer bg-slate-900/90 hover:bg-slate-800 border border-red-500/30 hover:border-red-400 rounded-xl p-4 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-red-500/20 text-red-300">AP 2 • SALÃO</span>
+                                    <i data-lucide="wifi" class="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-sm">Salão Sup. Direito</h4>
+                                <p class="text-xs text-slate-400 mt-1">IP Adm: 192.168.1.12 • Ch 6/44</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>SW PoE Porta 02</span>
+                                <span class="text-red-300 font-medium">Detalhes →</span>
+                            </div>
+                        </div>
+
+                        <!-- AP 3 -->
+                        <div onclick="showDeviceDetails('ap3')" class="group cursor-pointer bg-slate-900/90 hover:bg-slate-800 border border-red-500/30 hover:border-red-400 rounded-xl p-4 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-red-500/20 text-red-300">AP 3 • SALÃO</span>
+                                    <i data-lucide="wifi" class="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-sm">Salão Inf. Esquerdo</h4>
+                                <p class="text-xs text-slate-400 mt-1">IP Adm: 192.168.1.13 • Ch 11/149</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>SW PoE Porta 03</span>
+                                <span class="text-red-300 font-medium">Detalhes →</span>
+                            </div>
+                        </div>
+
+                        <!-- AP 4 -->
+                        <div onclick="showDeviceDetails('ap4')" class="group cursor-pointer bg-slate-900/90 hover:bg-slate-800 border border-red-500/30 hover:border-red-400 rounded-xl p-4 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-red-500/20 text-red-300">AP 4 • SALÃO</span>
+                                    <i data-lucide="wifi" class="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-sm">Salão Inf. Direito</h4>
+                                <p class="text-xs text-slate-400 mt-1">IP Adm: 192.168.1.14 • Ch 1/157</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                                <span>SW PoE Porta 04</span>
+                                <span class="text-red-300 font-medium">Detalhes →</span>
+                            </div>
+                        </div>
+
+                        <!-- AP 5 (COZINHA - ZONA AZUL) -->
+                        <div onclick="showDeviceDetails('ap5')" class="group cursor-pointer bg-gradient-to-b from-blue-950/60 to-slate-900 hover:from-blue-900/60 border-2 border-blue-500/60 hover:border-blue-400 rounded-xl p-4 transition-all flex flex-col justify-between shadow-lg shadow-blue-950/30">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">AP 5 • COZINHA</span>
+                                    <i data-lucide="flame" class="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-sm">Cozinha (Zona Azul)</h4>
+                                <p class="text-xs text-blue-200/80 mt-1">IP Adm: 192.168.1.15 • Exclusivo KDS</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-blue-500/20 flex items-center justify-between text-[11px] text-blue-300">
+                                <span>SW PoE Porta 05</span>
+                                <span class="font-semibold">Detalhes →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Dual SSID Broadcast Summary Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-panel rounded-xl p-5 border-l-4 border-l-amber-500 flex items-start gap-4">
+                <div class="p-2.5 bg-amber-500/10 rounded-lg text-amber-400 shrink-0">
+                    <i data-lucide="monitor-smartphone" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h4 class="font-bold text-white">SSID: PDV/KDS (Administrativo)</h4>
+                        <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">192.168.1.x • VLAN 10</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1">Sub-rede <strong>192.168.1.0/24</strong> destinada à administração, gerência dos switches/APs, terminais PDV e telas KDS da cozinha com prioridade máxima.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-xl p-5 border-l-4 border-l-cyan-500 flex items-start gap-4">
+                <div class="p-2.5 bg-cyan-500/10 rounded-lg text-cyan-400 shrink-0">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h4 class="font-bold text-white">SSID: Clientes (Visitantes)</h4>
+                        <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">192.168.2.x • VLAN 20</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1">Sub-rede <strong>192.168.2.0/24</strong> exclusiva para clientes. Isolada por firewall para impedir qualquer comunicação com a rede administrativa 192.168.1.x.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SEÇÃO 3: SEGURANÇA & SEGMENTAÇÃO (MATRIZ DE VLANS E SSIDS)
+         ===================================================================== -->
+    <section id="section-seguranca" class="tab-section hidden space-y-6">
+        <div>
+            <h2 class="text-2xl font-bold text-white">Segmentação Lógica, Plano IP & Segurança</h2>
+            <p class="text-slate-400 text-sm mt-1">Separação rigorosa entre a faixa administrativa (192.168.1.x) e a VLAN exclusiva de clientes (192.168.2.x).</p>
+        </div>
+
+        <!-- Side-by-Side SSID Comparison Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Card 1: SSID PDV/KDS (192.168.1.x) -->
+            <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-amber-500 shadow-xl space-y-5">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            <i data-lucide="lock" class="w-3.5 h-3.5"></i> REDE ADMINISTRATIVA & OPERACIONAL
+                        </span>
+                        <h3 class="text-2xl font-bold text-white mt-2">Faixa: <span class="text-amber-400 font-mono">192.168.1.x</span></h3>
+                        <p class="text-xs text-slate-400 mt-0.5">SSID: PDV/KDS • Gerência de Rede, Caixas e Cozinha</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Identificador</span>
+                        <span class="font-mono text-lg font-bold text-amber-400">VLAN 10</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Sub-rede IPv4 Administrativa</span>
+                        <span class="font-mono font-bold text-amber-300">192.168.1.0/24 (Gateway .1.1)</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Dispositivos Alocados</span>
+                        <span class="text-slate-200">Switches L2, AP 1–5, PDVs, KDS</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Prioridade de Tráfego (QoS)</span>
+                        <span class="font-semibold text-emerald-400">Alta / Tempo Real (WMM Voice/Video)</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Criptografia & Autenticação</span>
+                        <span class="font-mono text-slate-200">WPA2/WPA3-AES (Restrita)</span>
+                    </div>
+                    <div class="flex justify-between py-2">
+                        <span class="text-slate-400">Permissões de Firewall</span>
+                        <span class="text-amber-300 font-medium">Acesso total aos servidores e impressoras</span>
+                    </div>
+                </div>
+
+                <div class="bg-amber-950/30 border border-amber-500/20 rounded-xl p-3.5 text-xs text-amber-200/90 leading-relaxed">
+                    <strong>Alocação Estática Recomendada:</strong> <code>192.168.1.1</code> (Roteador), <code>192.168.1.2</code> (Switch 48P), <code>192.168.1.3</code> (Switch PoE 8P Salão), <code>192.168.1.11–15</code> (AP 1 a AP 5) e DHCP <code>.1.50–.1.200</code> para PDVs/KDS.
+                </div>
+            </div>
+
+            <!-- Card 2: SSID Clientes (192.168.2.x) -->
+            <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-cyan-500 shadow-xl space-y-5">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                            <i data-lucide="globe" class="w-3.5 h-3.5"></i> VLAN EXCLUSIVA DE CLIENTES
+                        </span>
+                        <h3 class="text-2xl font-bold text-white mt-2">Faixa: <span class="text-cyan-400 font-mono">192.168.2.x</span></h3>
+                        <p class="text-xs text-slate-400 mt-0.5">SSID: Clientes • Wi-Fi Visitantes no Salão</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Identificador</span>
+                        <span class="font-mono text-lg font-bold text-cyan-400">VLAN 20</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Sub-rede IPv4 Clientes</span>
+                        <span class="font-mono font-bold text-cyan-300">192.168.2.0/24 (Gateway .2.1)</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Controle de Banda (Bandwidth)</span>
+                        <span class="font-semibold text-cyan-300">Limitado por Cliente (Ex: 15 Mbps)</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Isolamento L2 (Client Isolation)</span>
+                        <span class="font-semibold text-emerald-400">Ativado (Visitantes isolados entre si)</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-800">
+                        <span class="text-slate-400">Acesso à Faixa 192.168.1.x</span>
+                        <span class="font-bold text-rose-400">BLOQUEADO (Regra Drop Inter-VLAN)</span>
+                    </div>
+                    <div class="flex justify-between py-2">
+                        <span class="text-slate-400">Saída para Internet</span>
+                        <span class="text-slate-200">Acesso direto WAN via NAT isolado</span>
+                    </div>
+                </div>
+
+                <div class="bg-cyan-950/30 border border-cyan-500/20 rounded-xl p-3.5 text-xs text-cyan-200/90 leading-relaxed">
+                    <strong>Segurança Total:</strong> Qualquer dispositivo conectado no SSID <strong>Clientes</strong> recebe IP na faixa <code>192.168.2.x</code> e possui bloqueio absoluto contra ping, varredura ou acesso aos equipamentos da rede <code>192.168.1.x</code>.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Technical VLAN Tagging Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden shadow-xl">
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="font-bold text-white text-base">Matriz de Configuração de Portas & Sub-redes (IEEE 802.1Q)</h3>
+                <span class="text-xs font-mono text-slate-400">192.168.1.x (Adm) | 192.168.2.x (Cli)</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-900/90 text-slate-400 uppercase text-[11px] tracking-wider">
+                        <tr>
+                            <th class="px-6 py-3.5">Equipamento / Interface</th>
+                            <th class="px-6 py-3.5">Modo da Porta</th>
+                            <th class="px-6 py-3.5">Gerência (192.168.1.x)</th>
+                            <th class="px-6 py-3.5">VLANs Permitidas (Tagged)</th>
+                            <th class="px-6 py-3.5">PoE+</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                        <tr class="hover:bg-slate-900/40">
+                            <td class="px-6 py-3.5 font-medium text-white">Roteador Central ↔ Switch 48p (Rack Verde)</td>
+                            <td class="px-6 py-3.5"><span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-xs">Trunk Uplink</span></td>
+                            <td class="px-6 py-3.5 font-mono text-amber-300">192.168.1.1 ↔ .1.2</td>
+                            <td class="px-6 py-3.5 font-mono text-emerald-400">VLAN 10 (.1.x), VLAN 20 (.2.x)</td>
+                            <td class="px-6 py-3.5 text-slate-500">N/A</td>
+                        </tr>
+                        <tr class="hover:bg-slate-900/40">
+                            <td class="px-6 py-3.5 font-medium text-white">Switch 48p ↔ Switch PoE 8p (Salão)</td>
+                            <td class="px-6 py-3.5"><span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono text-xs">Trunk Cat6</span></td>
+                            <td class="px-6 py-3.5 font-mono text-amber-300">192.168.1.2 ↔ .1.3</td>
+                            <td class="px-6 py-3.5 font-mono text-emerald-400">VLAN 10 (.1.x), VLAN 20 (.2.x)</td>
+                            <td class="px-6 py-3.5 text-slate-500">N/A (Dados)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-900/40">
+                            <td class="px-6 py-3.5 font-medium text-white">Switch PoE 8p Portas 01–05 (AP 1 a AP 5)</td>
+                            <td class="px-6 py-3.5"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-xs">Trunk PoE+</span></td>
+                            <td class="px-6 py-3.5 font-mono text-amber-300">192.168.1.11 – .15</td>
+                            <td class="px-6 py-3.5 font-mono text-emerald-400">VLAN 10 (PDV), VLAN 20 (Cli)</td>
+                            <td class="px-6 py-3.5"><span class="text-amber-400 font-semibold">Ativo (Dados+Energia)</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-900/40">
+                            <td class="px-6 py-3.5 font-medium text-white">Switch 48p (Caixas Fixos / Impressoras)</td>
+                            <td class="px-6 py-3.5"><span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-mono text-xs">Access Adm</span></td>
+                            <td class="px-6 py-3.5 font-mono text-amber-300">192.168.1.50 – .200</td>
+                            <td class="px-6 py-3.5 text-slate-500">VLAN 10 (Untagged)</td>
+                            <td class="px-6 py-3.5 text-slate-500">Desativado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SEÇÃO 4: RESUMO EXECUTIVO / BENEFÍCIOS PARA O NEGÓCIO
+         ===================================================================== -->
+    <section id="section-executivo" class="tab-section hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Resumo Executivo & Retorno Operacional</h2>
+                <p class="text-slate-400 text-sm mt-1">Como esta arquitetura protege o faturamento, agiliza a cozinha e prepara o negócio para crescer.</p>
+            </div>
+
+            <!-- 4 Key Business Pillars -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-2xl p-6 space-y-3 hover:border-emerald-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">1. Continuidade Operacional (Zero Paradas no Caixa)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        A separação física e lógica entre o tráfego de <strong>Clientes</strong> e a rede <strong>PDV/KDS</strong> impede que picos de uso de internet por visitantes travem o fechamento de contas, maquininhas de cartão ou o envio de comandas para a cozinha.
+                    </p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 space-y-3 hover:border-rose-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center">
+                        <i data-lucide="chef-hat" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">2. Agilidade na Produção com AP Dedicado na Cozinha</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Posicionar o <strong>5º Access Point exclusivamente na cozinha</strong> (canto superior direito / marcação azul) garante que os monitores KDS recebam os pedidos instantaneamente, reduzindo o tempo de preparo e eliminando comandas perdidas por falha de sinal.
+                    </p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 space-y-3 hover:border-blue-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">3. Segurança Cibernética e Conformidade (LGPD)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Com VLANs gerenciáveis e isolamento de clientes, um visitante mal-intencionado conectado ao Wi-Fi gratuito jamais consegue enxergar ou atacar os servidores financeiros, caixas ou sistemas internos da empresa.
+                    </p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 space-y-3 hover:border-amber-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">4. Escalabilidade & Gestão Centralizada</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        O Switch de 48 portas L2 somado ao Switch PoE L2 oferece ampla reserva de portas para expansão futura (câmeras CFTV IP, telefonia VoIP, totens de autoatendimento) e permite reiniciar qualquer AP remotamente via PoE sem precisar subir em escadas.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bill of Materials / Architecture Checklist -->
+            <div class="glass-panel rounded-2xl p-6">
+                <h3 class="font-bold text-white text-lg mb-4">Inventário Estrutural Validado no Projeto</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+                        <span class="text-xs font-mono text-indigo-400">01 UNIDADE • RACK VERDE</span>
+                        <p class="font-bold text-white text-sm mt-1">Roteador Central</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Core • .1.x Adm & .2.x Cli</p>
+                    </div>
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+                        <span class="text-xs font-mono text-blue-400">01 UNIDADE • RACK VERDE</span>
+                        <p class="font-bold text-white text-sm mt-1">Switch 48 Portas L2</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Gerenciável • Distribuição</p>
+                    </div>
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+                        <span class="text-xs font-mono text-cyan-400">INFRAESTRUTURA</span>
+                        <p class="font-bold text-white text-sm mt-1">Cabeamento Cat6</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Uplink + Ramais PoE+</p>
+                    </div>
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+                        <span class="text-xs font-mono text-amber-400">01 UNIDADE • SALÃO</span>
+                        <p class="font-bold text-white text-sm mt-1">Switch PoE 8 Portas L2</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Gerenciável • Dados+Energia</p>
+                    </div>
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+                        <span class="text-xs font-mono text-emerald-400">05 UNIDADES (AP 1–5)</span>
+                        <p class="font-bold text-white text-sm mt-1">Access Points Pro</p>
+                        <p class="text-xs text-slate-400 mt-0.5">AP 1–4 Salão + AP 5 Cozinha</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-5 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <span>Arquitetura de Rede Corporativa • Documentação Técnica Interativa</span>
+            <span>Segmentação: VLAN 10 (PDV/KDS) • VLAN 20 (Clientes)</span>
+        </div>
+    </footer>
+
+    <!-- =====================================================================
+         MODAL DE DETALHES DO EQUIPAMENTO (SLIDE-OVER / DIALOG)
+         ===================================================================== -->
+    <div id="device-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative animate-fade-in">
+            <button onclick="closeDeviceModal()" class="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div id="modal-icon-box" class="p-3 rounded-xl bg-blue-500/20 text-blue-400">
+                    <i id="modal-icon" data-lucide="server" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span id="modal-badge" class="text-[11px] font-bold uppercase tracking-wider text-blue-400">Camada Core</span>
+                    <h3 id="modal-title" class="text-xl font-bold text-white">Título do Equipamento</h3>
+                </div>
+            </div>
+
+            <p id="modal-desc" class="text-sm text-slate-300 leading-relaxed mb-5">
+                Descrição detalhada do equipamento.
+            </p>
+
+            <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 space-y-2.5 mb-5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Especificações & Configuração</h4>
+                <ul id="modal-specs" class="space-y-2 text-xs sm:text-sm text-slate-300">
+                    <!-- Populated dynamically -->
+                </ul>
+            </div>
+
+            <div class="bg-emerald-950/30 border border-emerald-500/20 rounded-xl p-3.5">
+                <h4 class="text-xs font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Justificativa Executiva
+                </h4>
+                <p id="modal-justification" class="text-xs text-emerald-100/90 leading-relaxed">
+                    Justificativa de negócio.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Application Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/60');
+            });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/60');
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+        }
+
+        // Floorplan Heatmap Toggle
+        let heatmapVisible = true;
+        function toggleHeatmap() {
+            heatmapVisible = !heatmapVisible;
+            const layer = document.getElementById('heatmap-layer');
+            const btn = document.getElementById('btn-toggle-heatmap');
+
+            if (heatmapVisible) {
+                layer.style.opacity = '1';
+                btn.classList.remove('bg-slate-800', 'text-slate-300');
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.innerHTML = '<i data-lucide="radio" class="w-3.5 h-3.5"></i><span>Sinal RF: ON</span>';
+            } else {
+                layer.style.opacity = '0';
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+                btn.innerHTML = '<i data-lucide="radio" class="w-3.5 h-3.5"></i><span>Sinal RF: OFF</span>';
+            }
+            lucide.createIcons();
+        }
+
+        // Floorplan Cat6 Cables Toggle
+        let cablesVisible = true;
+        function toggleCables() {
+            cablesVisible = !cablesVisible;
+            const layer = document.getElementById('cat6-cables-layer');
+            const btn = document.getElementById('btn-toggle-cables');
+
+            if (cablesVisible) {
+                layer.style.opacity = '1';
+                btn.classList.remove('bg-slate-800', 'text-slate-300');
+                btn.classList.add('bg-cyan-600', 'text-white');
+                btn.innerHTML = '<i data-lucide="cable" class="w-3.5 h-3.5"></i><span>Cabos Cat6: ON</span>';
+            } else {
+                layer.style.opacity = '0';
+                btn.classList.remove('bg-cyan-600', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+                btn.innerHTML = '<i data-lucide="cable" class="w-3.5 h-3.5"></i><span>Cabos Cat6: OFF</span>';
+            }
+            lucide.createIcons();
+        }
+
+        // Floorplan Zones Toggle (Red / Blue)
+        let zonesVisible = true;
+        function toggleZones() {
+            zonesVisible = !zonesVisible;
+            const redZone = document.getElementById('zone-red-salao');
+            const blueZone = document.getElementById('zone-blue-kitchen');
+            const btn = document.getElementById('btn-toggle-zones');
+
+            if (zonesVisible) {
+                if (redZone) redZone.style.opacity = '1';
+                if (blueZone) blueZone.style.opacity = '1';
+                btn.classList.remove('bg-slate-950', 'text-slate-400');
+                btn.classList.add('bg-slate-800', 'text-slate-200');
+                btn.innerHTML = '<i data-lucide="layers" class="w-3.5 h-3.5"></i><span>Zonas: ON</span>';
+            } else {
+                if (redZone) redZone.style.opacity = '0.15';
+                if (blueZone) blueZone.style.opacity = '0.15';
+                btn.classList.remove('bg-slate-800', 'text-slate-200');
+                btn.classList.add('bg-slate-950', 'text-slate-400');
+                btn.innerHTML = '<i data-lucide="layers" class="w-3.5 h-3.5"></i><span>Zonas: OFF</span>';
+            }
+            lucide.createIcons();
+        }
+
+        // Floorplan SSID Coverage Filter (Todos / PDV-KDS / Clientes)
+        function setFloorFilter(filterType) {
+            document.querySelectorAll('.floor-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('text-slate-400', 'hover:text-white');
+            });
+            const activeFilter = document.getElementById(`filter-${filterType}`);
+            if (activeFilter) {
+                activeFilter.classList.remove('text-slate-400', 'hover:text-white');
+                activeFilter.classList.add('bg-blue-600', 'text-white');
+            }
+
+            const salaoCovs = ['cov-ap1', 'cov-ap2', 'cov-ap3', 'cov-ap4'];
+            const ap5Cov = document.getElementById('cov-ap5');
+
+            if (filterType === 'all') {
+                salaoCovs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.setAttribute('fill', 'url(#grad-salao-all)');
+                        el.style.opacity = '1';
+                    }
+                });
+                if (ap5Cov) {
+                    ap5Cov.setAttribute('fill', 'url(#grad-cozinha-blue)');
+                    ap5Cov.style.opacity = '1';
+                }
+            } else if (filterType === 'pdv') {
+                salaoCovs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.setAttribute('fill', 'url(#grad-pdv)');
+                        el.style.opacity = '1';
+                    }
+                });
+                if (ap5Cov) {
+                    ap5Cov.setAttribute('fill', 'url(#grad-pdv)');
+                    ap5Cov.style.opacity = '1';
+                }
+            } else if (filterType === 'clientes') {
+                salaoCovs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.setAttribute('fill', 'url(#grad-clientes)');
+                        el.style.opacity = '1';
+                    }
+                });
+                if (ap5Cov) {
+                    ap5Cov.style.opacity = '0.15';
+                }
+            }
+        }
+
+        // Floorplan Inspector Data (Matching Real Floorplan Nodes & IP Plan)
+        const floorNodesData = {
+            ap1: {
+                badge: 'AP 1 • Salão Sup. Esquerdo',
+                badgeClass: 'bg-red-500/20 text-red-300 border-red-500/30',
+                borderClass: 'border-t-red-500',
+                cable: 'PoE+ Porta 01 (Salão)',
+                title: 'AP 1 — Salão Superior Esquerdo',
+                desc: 'Alimentado diretamente pelo Switch PoE 8 Portas do salão (internet + energia juntos no cabo Cat6). Cobre as bancadas superiores esquerdas e balcão central.',
+                channels: 'IP Adm: 192.168.1.11 • Ch 1/36',
+                port: 'Switch PoE 8P Salão (Porta 01)',
+                ssid: 'PDV/KDS (.1.x) + Clientes (.2.x)'
+            },
+            ap2: {
+                badge: 'AP 2 • Salão Sup. Direito',
+                badgeClass: 'bg-red-500/20 text-red-300 border-red-500/30',
+                borderClass: 'border-t-red-500',
+                cable: 'PoE+ Porta 02 (Salão)',
+                title: 'AP 2 — Salão Superior Direito',
+                desc: 'Alimentado pelo Switch PoE 8 Portas do salão com enlace Cat6 ultracurto. Garante cobertura de alta densidade nas mesas e bancadas superiores direitas.',
+                channels: 'IP Adm: 192.168.1.12 • Ch 6/44',
+                port: 'Switch PoE 8P Salão (Porta 02)',
+                ssid: 'PDV/KDS (.1.x) + Clientes (.2.x)'
+            },
+            ap3: {
+                badge: 'AP 3 • Salão Inf. Esquerdo',
+                badgeClass: 'bg-red-500/20 text-red-300 border-red-500/30',
+                borderClass: 'border-t-red-500',
+                cable: 'PoE+ Porta 03 (Salão)',
+                title: 'AP 3 — Salão Inferior Esquerdo',
+                desc: 'Atende a área inferior esquerda do salão junto aos sofás em U (SO1) e a porção esquerda dos balcões centrais duplos, recebendo dados e energia do Switch PoE do salão.',
+                channels: 'IP Adm: 192.168.1.13 • Ch 11/149',
+                port: 'Switch PoE 8P Salão (Porta 03)',
+                ssid: 'PDV/KDS (.1.x) + Clientes (.2.x)'
+            },
+            ap4: {
+                badge: 'AP 4 • Salão Inf. Direito',
+                badgeClass: 'bg-red-500/20 text-red-300 border-red-500/30',
+                borderClass: 'border-t-red-500',
+                cable: 'PoE+ Porta 04 (Salão)',
+                title: 'AP 4 — Salão Inferior Direito',
+                desc: 'Cobre o quadrante inferior direito do salão próximo aos sofás em U direitos, completando os 4 pontos de acesso do salão conectados ao Switch PoE 8 Portas.',
+                channels: 'IP Adm: 192.168.1.14 • Ch 1/157',
+                port: 'Switch PoE 8P Salão (Porta 04)',
+                ssid: 'PDV/KDS (.1.x) + Clientes (.2.x)'
+            },
+            ap5: {
+                badge: 'AP 5 • Cozinha (Área Azul)',
+                badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+                borderClass: 'border-t-blue-500',
+                cable: 'PoE+ Porta 05',
+                title: 'AP 5 — Exclusivo Cozinha & KDS',
+                desc: 'Identificado como AP 5 na marcação azul superior direita. Opera na faixa administrativa 192.168.1.x (SSID PDV/KDS) para telas KDS e impressoras sem bloqueio de paredes.',
+                channels: 'IP Adm: 192.168.1.15 • Ch 6/100',
+                port: 'Switch PoE 8P (Porta 05)',
+                ssid: 'PDV/KDS (192.168.1.x Crítica)'
+            },
+            switchPoe: {
+                badge: 'Switch PoE • Salão',
+                badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                borderClass: 'border-t-amber-500',
+                cable: '8 Portas L2 PoE+',
+                title: 'Switch PoE 8 Portas L2 Gerenciável',
+                desc: 'Posicionado estrategicamente dentro do salão para concentrar a alimentação elétrica e dados (Cat6 PoE+) dos Access Points AP 1, AP 2, AP 3, AP 4 e AP 5 com cabos curtos.',
+                channels: 'IP Gerência (Adm): 192.168.1.3 /24',
+                port: 'Cat6 Trunk ← Switch 48P',
+                ssid: 'VLAN 10 (.1.x) & VLAN 20 (.2.x)'
+            },
+            rack: {
+                badge: 'Área Verde • Rack Central',
+                badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+                borderClass: 'border-t-emerald-500',
+                cable: 'Core & Distribuição',
+                title: 'Rack Central (Canto Inferior Direito)',
+                desc: 'Abriga o Roteador Central (192.168.1.1) e o Switch 48 Portas L2 Gerenciável (192.168.1.2). Envia o Uplink Cat6 Trunk para o Switch PoE 8 Portas no salão.',
+                channels: 'Adm: 192.168.1.x | Cli: 192.168.2.x',
+                port: '48 Portas L2 + Uplink Salão',
+                ssid: 'Roteamento Inter-VLAN & Firewall'
+            }
+        };
+
+        // Interactive Hover Tooltip for Cat6 PoE Cables
+        function initCableHoverTooltips() {
+            const tooltip = document.getElementById('cable-hover-tooltip');
+            const tooltipTitle = document.getElementById('tooltip-cable-title');
+            const tooltipDesc = document.getElementById('tooltip-cable-desc');
+            const cableZones = document.querySelectorAll('.cable-hover-zone');
+
+            cableZones.forEach(zone => {
+                zone.addEventListener('mouseenter', (e) => {
+                    tooltipTitle.textContent = zone.getAttribute('data-title');
+                    tooltipDesc.textContent = zone.getAttribute('data-desc');
+                    tooltip.classList.remove('hidden');
+                    moveTooltip(e);
+                });
+
+                zone.addEventListener('mousemove', (e) => {
+                    moveTooltip(e);
+                });
+
+                zone.addEventListener('mouseleave', () => {
+                    tooltip.classList.add('hidden');
+                });
+            });
+
+            function moveTooltip(e) {
+                const offsetX = 14;
+                const offsetY = 14;
+                let left = e.clientX + offsetX;
+                let top = e.clientY + offsetY;
+
+                // Keep tooltip inside viewport bounds
+                if (left + 290 > window.innerWidth) {
+                    left = e.clientX - 290;
+                }
+                if (top + 90 > window.innerHeight) {
+                    top = e.clientY - 90;
+                }
+
+                tooltip.style.left = `${left}px`;
+                tooltip.style.top = `${top}px`;
+            }
+        }
+
+        // Initialize hover listeners on load
+        initCableHoverTooltips();
+
+        function selectFloorNode(nodeKey) {
+            const data = floorNodesData[nodeKey];
+            if (!data) return;
+
+            const card = document.getElementById('floor-inspector-card');
+            card.className = `glass-panel rounded-2xl p-5 border-t-4 ${data.borderClass} shadow-xl transition-all`;
+
+            const badge = document.getElementById('insp-badge');
+            badge.className = `px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider border ${data.badgeClass}`;
+            badge.textContent = data.badge;
+
+            document.getElementById('insp-cable').textContent = data.cable;
+            document.getElementById('insp-title').textContent = data.title;
+            document.getElementById('insp-desc').textContent = data.desc;
+            document.getElementById('insp-channels').textContent = data.channels;
+            document.getElementById('insp-port').textContent = data.port;
+            document.getElementById('insp-ssid').textContent = data.ssid;
+        }
+
+        // Device Specifications Database (Modal)
+        const deviceDatabase = {
+            router: {
+                badge: 'Rack Central (Área Verde) • Camada Core',
+                title: 'Roteador Central Gerenciável',
+                icon: 'server',
+                colorClass: 'bg-indigo-500/20 text-indigo-400',
+                desc: 'Instalado no Rack Central (canto inferior direito), atua como Gateway das sub-redes 192.168.1.0/24 (Administrativo) e 192.168.2.0/24 (Clientes).',
+                specs: [
+                    '<strong>Faixa Administrativa (VLAN 10):</strong> 192.168.1.0/24 (Gateway 192.168.1.1) para PDV/KDS e gerência.',
+                    '<strong>Faixa Clientes (VLAN 20):</strong> 192.168.2.0/24 (Gateway 192.168.2.1) isolada para visitantes.',
+                    '<strong>Firewall Inter-VLAN:</strong> Bloqueia qualquer tráfego da rede 192.168.2.x para a rede 192.168.1.x.',
+                    '<strong>Uplink:</strong> Conexão Gigabit Trunk 802.1Q direta para o Switch 48 Portas L2.'
+                ],
+                justification: 'Garante isolamento total entre os dispositivos administrativos/financeiros e os celulares dos clientes conectados no salão.'
+            },
+            switch48: {
+                badge: 'Rack Central (Área Verde) • Distribuição',
+                title: 'Switch 48 Portas L2 Gerenciável',
+                icon: 'hard-drive',
+                colorClass: 'bg-blue-500/20 text-blue-400',
+                desc: 'Equipamento central de distribuição no Rack Verde (IP 192.168.1.2) que atende os pontos cabeadas fixos e envia o Uplink Cat6 para o Switch PoE 8 Portas no salão.',
+                specs: [
+                    '<strong>IP de Gerência:</strong> 192.168.1.2 (VLAN 10 Administrativa).',
+                    '<strong>Protocolo 802.1Q:</strong> Envia VLAN 10 (.1.x) e VLAN 20 (.2.x) em Trunk até o Switch PoE do salão.',
+                    '<strong>Atendimento Cabeado:</strong> Conecta caixas fixos, servidores locais e impressoras fiscais.'
+                ],
+                justification: 'Centraliza toda a comutação do estabelecimento com alta densidade de portas e estabilidade empresarial.'
+            },
+            cat6: {
+                badge: 'Infraestrutura Física • Uplink & PoE+',
+                title: 'Cabeamento Estruturado Cat6 UTP',
+                icon: 'cable',
+                colorClass: 'bg-cyan-500/20 text-cyan-400',
+                desc: 'Interliga o Switch 48 Portas (Rack Verde) ao Switch PoE 8 Portas (Salão) e transporta dados (internet) + energia elétrica juntos até os 5 Access Points.',
+                specs: [
+                    '<strong>Uplink Trunk:</strong> Cabo Cat6 dedicado levando as VLANs 10 e 20 do Rack Verde até o Salão.',
+                    '<strong>Ramais PoE+ no Salão:</strong> Cabos curtos transportando internet e energia juntos para AP 1 a AP 5.',
+                    '<strong>Condutores 100% Cobre:</strong> Garante eficiência elétrica PoE+ sem queda de tensão.'
+                ],
+                justification: 'Reduz a passagem de múltiplos cabos longos entre a sala técnica e o salão ao descentralizar a distribuição PoE+.'
+            },
+            switchPoe: {
+                badge: 'Posicionado no Salão • Acesso & Energia PoE+',
+                title: 'Switch PoE 8 Portas L2 Gerenciável',
+                icon: 'zap',
+                colorClass: 'bg-amber-500/20 text-amber-400',
+                desc: 'Instalado dentro do salão (IP 192.168.1.3), recebe o Uplink do Rack Verde e distribui internet e energia elétrica juntos via cabo Cat6 para os APs.',
+                specs: [
+                    '<strong>IP de Gerência:</strong> 192.168.1.3/24 (Sub-rede Administrativa).',
+                    '<strong>Portas Ativas:</strong> Portas 01 a 04 alimentam AP 1–4 no salão; Porta 05 alimenta o AP 5 na cozinha.',
+                    '<strong>Reserva Técnica:</strong> 3 portas PoE+ livres no salão para futuras câmeras IP ou pontos extras.'
+                ],
+                justification: 'Facilita a manutenção no salão, encurta os cabos PoE dos Access Points e permite reiniciar qualquer AP remotamente.'
+            },
+            ap1: {
+                badge: 'AP 1 • Salão Superior Esquerdo',
+                title: 'AP 1 - Salão Superior Esquerdo',
+                icon: 'wifi',
+                colorClass: 'bg-red-500/20 text-red-400',
+                desc: 'Alimentado via cabo Cat6 (internet + energia) a partir da Porta 01 do Switch PoE 8 Portas no salão.',
+                specs: [
+                    '<strong>IP Administrativo:</strong> 192.168.1.11/24 (Gerência).',
+                    '<strong>Canais RF:</strong> Canal 1 (2.4 GHz) e Canal 36 (5 GHz).',
+                    '<strong>SSIDs Irradiados:</strong> "PDV/KDS" (192.168.1.x) e "Clientes" (192.168.2.x).'
+                ],
+                justification: 'Cobre o quadrante superior esquerdo do salão com roaming rápido para os terminais dos garçons.'
+            },
+            ap2: {
+                badge: 'AP 2 • Salão Superior Direito',
+                title: 'AP 2 - Salão Superior Direito',
+                icon: 'wifi',
+                colorClass: 'bg-red-500/20 text-red-400',
+                desc: 'Alimentado via cabo Cat6 (internet + energia) a partir da Porta 02 do Switch PoE 8 Portas no salão.',
+                specs: [
+                    '<strong>IP Administrativo:</strong> 192.168.1.12/24 (Gerência).',
+                    '<strong>Canais RF:</strong> Canal 6 (2.4 GHz) e Canal 44 (5 GHz).',
+                    '<strong>SSIDs Irradiados:</strong> "PDV/KDS" (192.168.1.x) e "Clientes" (192.168.2.x).'
+                ],
+                justification: 'Atende as bancadas e mesas superiores direitas com enlace curto até o Switch PoE do salão.'
+            },
+            ap3: {
+                badge: 'AP 3 • Salão Inferior Esquerdo',
+                title: 'AP 3 - Salão Inferior Esquerdo',
+                icon: 'wifi',
+                colorClass: 'bg-red-500/20 text-red-400',
+                desc: 'Alimentado via cabo Cat6 (internet + energia) a partir da Porta 03 do Switch PoE 8 Portas no salão.',
+                specs: [
+                    '<strong>IP Administrativo:</strong> 192.168.1.13/24 (Gerência).',
+                    '<strong>Canais RF:</strong> Canal 11 (2.4 GHz) e Canal 149 (5 GHz).',
+                    '<strong>SSIDs Irradiados:</strong> "PDV/KDS" (192.168.1.x) e "Clientes" (192.168.2.x).'
+                ],
+                justification: 'Cobre a região dos sofás em U esquerdos e balcões centrais sem zonas de sombra.'
+            },
+            ap4: {
+                badge: 'AP 4 • Salão Inferior Direito',
+                title: 'AP 4 - Salão Inferior Direito',
+                icon: 'wifi',
+                colorClass: 'bg-red-500/20 text-red-400',
+                desc: 'Alimentado via cabo Cat6 (internet + energia) a partir da Porta 04 do Switch PoE 8 Portas no salão.',
+                specs: [
+                    '<strong>IP Administrativo:</strong> 192.168.1.14/24 (Gerência).',
+                    '<strong>Canais RF:</strong> Canal 1 (2.4 GHz) e Canal 157 (5 GHz).',
+                    '<strong>SSIDs Irradiados:</strong> "PDV/KDS" (192.168.1.x) e "Clientes" (192.168.2.x).'
+                ],
+                justification: 'Completa a cobertura celular dos 4 quadrantes do salão na porção inferior direita.'
+            },
+            ap5: {
+                badge: 'AP 5 • Cozinha (Zona Azul)',
+                title: 'AP 5 - Exclusivo Cozinha & Sistema KDS',
+                icon: 'flame',
+                colorClass: 'bg-blue-500/20 text-blue-400',
+                desc: 'Identificado como AP 5 na área azul superior direita da planta baixa, dedicado à operação da cozinha.',
+                specs: [
+                    '<strong>IP Administrativo:</strong> 192.168.1.15/24 (Faixa Operacional).',
+                    '<strong>Alimentação:</strong> Porta 05 do Switch PoE 8 Portas (Dados + Energia via Cat6).',
+                    '<strong>Foco Operacional:</strong> Telas KDS, tablets de produção e impressoras na faixa 192.168.1.x.'
+                ],
+                justification: 'Elimina falhas de sinal causadas pelas paredes de alvenaria e coifas metálicas da cozinha.'
+            }
+        };
+
+        // Modal Controls
+        function showDeviceDetails(deviceKey) {
+            const data = deviceDatabase[deviceKey];
+            if (!data) return;
+
+            document.getElementById('modal-badge').textContent = data.badge;
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-desc').textContent = data.desc;
+            document.getElementById('modal-justification').textContent = data.justification;
+
+            const iconBox = document.getElementById('modal-icon-box');
+            iconBox.className = `p-3 rounded-xl ${data.colorClass}`;
+            iconBox.innerHTML = `<i data-lucide="${data.icon}" class="w-6 h-6"></i>`;
+
+            const specsList = document.getElementById('modal-specs');
+            specsList.innerHTML = data.specs.map(item => `
+                <li class="flex items-start gap-2">
+                    <span class="text-blue-400 mt-1">•</span>
+                    <span>${item}</span>
+                </li>
+            `).join('');
+
+            const modal = document.getElementById('device-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeDeviceModal() {
+            const modal = document.getElementById('device-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Close modals on backdrop click or Escape key
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'device-modal') closeDeviceModal();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDeviceModal();
+            }
+        });
+    </script>
+</body>
+</html>

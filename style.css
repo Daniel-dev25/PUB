@@ -1,0 +1,60 @@
+/* ==========================================================================
+ESTILOS PERSONALIZADOS - PROJETO DE ARQUITETURA DE REDE CORPORATIVA
+========================================================================== */
+
+/* Barra de rolagem estilizada para visual executivo */
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+::-webkit-scrollbar-track {
+background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+background: rgba(71, 85, 105, 0.6);
+border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: rgba(100, 116, 139, 0.8);
+}
+
+/* Animação de pulso para os pontos de acesso (APs) e nós ativos */
+@keyframes pulse-ring {
+0% {
+transform: scale(0.8);
+opacity: 0.8;
+}
+100% {
+transform: scale(2.2);
+opacity: 0;
+}
+}
+
+.animate-pulse-ring {
+animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+transform-origin: center;
+transform-box: fill-box;
+}
+
+/* Animação de fluxo de dados e energia nos cabos Cat6 */
+@keyframes dash-flow {
+to {
+stroke-dashoffset: -24;
+}
+}
+
+.animate-flow {
+stroke-dasharray: 6, 6;
+animation: dash-flow 1s linear infinite;
+}
+
+/* Painéis translúcidos (Glassmorphism) */
+.glass-panel {
+background: rgba(30, 41, 59, 0.7);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(148, 163, 184, 0.15);
+}
